@@ -30,8 +30,10 @@ importers:
 
   packages/runtime-core:
     specifiers:
+      '@mini-vue/reactivity': workspace:^1.0.0
       '@mini-vue/shared': workspace:^1.0.0
     dependencies:
+      '@mini-vue/reactivity': link:../reactivity
       '@mini-vue/shared': link:../shared
 
   packages/shared:

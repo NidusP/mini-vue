@@ -1,4 +1,9 @@
-import { mutableHandlers, readonlyHandlers, shallowReadonlyHandlers } from "./baseHandlers";
+import { isObject } from "@mini-vue/shared";
+import {
+  mutableHandlers,
+  readonlyHandlers,
+  shallowReadonlyHandlers,
+} from "./baseHandlers";
 
 export const enum ReactiveFlags {
   IS_REACTIVE = "__v_isReactive",
@@ -10,34 +15,38 @@ export const reactiveMap = new WeakMap();
 export const readonlyMap = new WeakMap();
 export const shallowReadonlyMap = new WeakMap();
 
-function createReactiveObject(target, proxyMap, handlers){
-  if(proxyMap.has(target)){
-    return proxyMap.get(target)
+function createReactiveObject(target, proxyMap, handlers) {
+  if (!isObject(target)) {
+    console.warn(`target: ${target} must be an object`);
+    return target;
+  }
+  if (proxyMap.has(target)) {
+    return proxyMap.get(target);
   }
 
-  const reactive = new Proxy(target, handlers)
+  const reactive = new Proxy(target, handlers);
 
-  proxyMap.set(target, reactive)
-  return reactive
+  proxyMap.set(target, reactive);
+  return reactive;
 }
-export function reactive(raw){
-  return createReactiveObject(raw, reactiveMap, mutableHandlers)
-} 
-
-export function readonly(obj){
-  return createReactiveObject(obj, readonlyMap, readonlyHandlers)
+export function reactive(raw) {
+  return createReactiveObject(raw, reactiveMap, mutableHandlers);
 }
 
-export function shallowReadonly(obj){
-  return createReactiveObject(obj, shallowReadonlyMap, shallowReadonlyHandlers)
+export function readonly(obj) {
+  return createReactiveObject(obj, readonlyMap, readonlyHandlers);
+}
+
+export function shallowReadonly(obj) {
+  return createReactiveObject(obj, shallowReadonlyMap, shallowReadonlyHandlers);
 }
 
 export function isReadonly(value) {
-  return !!value[ReactiveFlags.IS_READONLY]
+  return !!value[ReactiveFlags.IS_READONLY];
 }
 
 export function isReactive(value) {
-  return !!value[ReactiveFlags.IS_REACTIVE]
+  return !!value[ReactiveFlags.IS_REACTIVE];
 }
 
 export function isProxy(value) {

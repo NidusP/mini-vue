@@ -2,7 +2,7 @@
   "name": "@mini-vue/reactivity",
   "version": "1.0.0",
   "description": "@mini-vue/reactivity",
-  "main": "src/index.ts",
+  "main": "index.ts",
   "scripts": {
     "test": "vitest"
   },
