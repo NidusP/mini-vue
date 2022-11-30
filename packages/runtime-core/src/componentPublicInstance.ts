@@ -5,7 +5,8 @@ import { hasOwn } from "@mini-vue/shared";
  * */ 
 const publicPropertiesMap = {
   $el:  (i) => i.vnode.el,
-  $data: (i) => null
+  $data: (i) => null,
+  $slots: (i) => i.slots,
 } as const;
 
 /**

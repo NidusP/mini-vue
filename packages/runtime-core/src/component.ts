@@ -3,6 +3,8 @@ import { shallowReadonly } from "@mini-vue/reactivity";
 import { initProps } from "./componentProps";
 import { PublicInstanceProxyHandlers } from "./componentPublicInstance";
 import { createVNode } from "./vnode";
+import { emit } from "./componentEmit";
+import { initSlots } from "./componentSlots";
 
 /**
  *  @description 创建组件实例对象
@@ -12,7 +14,9 @@ export function createComponentInstance(vnode) {
     vnode,
     type: vnode.type,
     ctx: {}, // context 对象
-    props: {}
+    props: {},
+    slots: null,
+    emit
   };
 
   // 在 prod 坏境下的 ctx 只是下面简单的结构；dev 环境下会更复杂
@@ -27,9 +31,10 @@ export function createComponentInstance(vnode) {
  * */
 export function setupComponent(instance) {
   // TODO
-  // initProps()
+  console.log(instance, 'setupComponent instance instance instance')
   initProps(instance, instance.vnode.props)
-  // initSlots()
+  // children即为插槽
+  initSlots(instance, instance.vnode.children)
   
   setupStatefulComponent(instance);
 }
@@ -47,8 +52,11 @@ function setupStatefulComponent(instance: any) {
   instance.proxy = new Proxy(instance.ctx, PublicInstanceProxyHandlers);
 
   if (setup) {
-    // (props, {})
-    const setupResult = setup(shallowReadonly(instance.props));
+    // (props, { emit })
+    // instance.emit.bind(null, instance)
+    const setupResult = setup(shallowReadonly(instance.props), {
+      emit: emit.bind(null, instance)
+    });
 
     // setupResult 可能是 function 也可能是 object
     // - function 则将其作为组件的 render 函数

@@ -48,11 +48,10 @@ function mountComponent(vnode: any, container) {
 
 function setupRenderEffect(instance, container) {
   const subTree = instance.render.call(instance.proxy);
-  console.log(subTree, " subTree subTree");
+ 
   // subTree 可能是 Component 类型也可能是 Element 类型
   // 调用 patch 去处理 subTree
   // Element 类型则直接挂载
-  debugger;
   patch(subTree, container);
 
   // patch 完毕后，将 el 再次赋给组件实例
