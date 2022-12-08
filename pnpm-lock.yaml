@@ -8,16 +8,26 @@ importers:
     devDependencies:
       vitest: registry.npmmirror.com/vitest/0.25.3
 
-  packages/mini-vue:
+  examples/mini-vue-demo:
     specifiers:
-      '@mini-vue/runtime-core': workspace:^1.0.0
+      mini-vue: workspace:^0.0.0
       typescript: ^4.6.4
       vite: ^3.2.3
     dependencies:
-      '@mini-vue/runtime-core': link:../runtime-core
+      mini-vue: link:../../packages/mini-vue
     devDependencies:
       typescript: registry.npmmirror.com/typescript/4.9.3
       vite: registry.npmmirror.com/vite/3.2.4
+
+  packages/mini-vue:
+    specifiers:
+      '@mini-vue/reactivity': workspace:^1.0.0
+      '@mini-vue/runtime-core': workspace:^1.0.0
+      '@mini-vue/runtime-dom': workspace:^1.0.0
+    dependencies:
+      '@mini-vue/reactivity': link:../reactivity
+      '@mini-vue/runtime-core': link:../runtime-core
+      '@mini-vue/runtime-dom': link:../runtime-dom
 
   packages/reactivity:
     specifiers:
@@ -34,6 +44,14 @@ importers:
       '@mini-vue/shared': workspace:^1.0.0
     dependencies:
       '@mini-vue/reactivity': link:../reactivity
+      '@mini-vue/shared': link:../shared
+
+  packages/runtime-dom:
+    specifiers:
+      '@mini-vue/runtime-core': workspace:^1.0.0
+      '@mini-vue/shared': workspace:^1.0.0
+    dependencies:
+      '@mini-vue/runtime-core': link:../runtime-core
       '@mini-vue/shared': link:../shared
 
   packages/shared:

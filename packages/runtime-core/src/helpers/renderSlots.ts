@@ -1,5 +1,9 @@
-import { createVNode } from '../vnode';
+import { createVNode, Fragment } from '../vnode';
 // 向外提供渲染插槽的方法
-export function renderSlots(slots) {
-  return createVNode('span', {}, slots);
+export function renderSlots(slots, name, props) {
+  const slot = slots[name];
+  if(slot) {
+    return createVNode(Fragment, {}, slot(props))
+  }
 }
+

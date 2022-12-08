@@ -9,14 +9,18 @@ import { initSlots } from "./componentSlots";
 /**
  *  @description 创建组件实例对象
  * */
-export function createComponentInstance(vnode) {
+export function createComponentInstance(vnode, parent) {
+  console.log('createComponentInstance -- parent: ', parent);
   const component = {
     vnode,
     type: vnode.type,
     ctx: {}, // context 对象
     props: {},
-    slots: null,
-    emit
+    slots: {},
+    emit,
+    // 取父级的provides
+    provides: parent ? parent.provides : {},
+    parent
   };
 
   // 在 prod 坏境下的 ctx 只是下面简单的结构；dev 环境下会更复杂
@@ -31,11 +35,10 @@ export function createComponentInstance(vnode) {
  * */
 export function setupComponent(instance) {
   // TODO
-  console.log(instance, 'setupComponent instance instance instance')
-  initProps(instance, instance.vnode.props)
+  initProps(instance, instance.vnode.props);
   // children即为插槽
-  initSlots(instance, instance.vnode.children)
-  
+  initSlots(instance, instance.vnode.children);
+
   setupStatefulComponent(instance);
 }
 
@@ -52,12 +55,14 @@ function setupStatefulComponent(instance: any) {
   instance.proxy = new Proxy(instance.ctx, PublicInstanceProxyHandlers);
 
   if (setup) {
+    // setup期间赋值
+    setCurrentInstance(instance);
     // (props, { emit })
     // instance.emit.bind(null, instance)
     const setupResult = setup(shallowReadonly(instance.props), {
-      emit: emit.bind(null, instance)
+      emit: emit.bind(null, instance),
     });
-
+    setCurrentInstance(null);
     // setupResult 可能是 function 也可能是 object
     // - function 则将其作为组件的 render 函数
     // - object 则注入到组件的上下文中
@@ -90,4 +95,13 @@ function finishComponentSetup(instance: any) {
 // h方法， 用于创建虚拟节点
 export function h(type, props?, children?) {
   return createVNode(type, props, children);
+}
+
+let currentInstance = null;
+
+function setCurrentInstance(instance) {
+  currentInstance = instance;
+}
+export function getCurrentInstance() {
+  return currentInstance;
 }
