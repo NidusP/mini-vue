@@ -5,7 +5,6 @@ import {
   provide,
   ref
 } from "mini-vue";
-
 import Foo from "./Foo";
 
 (window as any).self = null;
@@ -17,7 +16,7 @@ export default {
     return h(
       "div",
       {
-        class: ["cyan", "success"],
+        class: [this.count % 2 ? "cyan" :"", "success"],
         onClick() {
           console.log("click...", this.msg);
           this.msg += "1";
@@ -27,30 +26,31 @@ export default {
         },
       },
       [
+        h("button", { onClick: this.onClick }, 'click_' + this.count ),
         createTextVNode("Text Node Content"),
         h("div", { class: "cyan" }, "hi "),
         h("p", { class: "darkcyan" }, "plasticine "),
         h("p", { class: "darkviolet" }, `setupState msg: ${this.msg}`),
-        h(
-          Foo,
-          { data: 666666, onEvent: this.onEvent },
-          {
-            default: () => [
-              h("div", { class: "slot-div" }, "this is div slot"),
-              h("span", { class: "slot-span" }, "this is slot"),
-            ],
-          }
-        ),
-        h(
-          Foo,
-          { data: 666666, onEvent: this.onEvent },
-          {
-            top: ({ data }: any) =>
-              h("div", { class: "slot-div" }, "this is div slot top " + data),
-            bottom: () =>
-              h("span", { class: "slot-span" }, "this is slot bottom"),
-          }
-        ),
+        // h(
+        //   Foo,
+        //   { data: 666666, onEvent: this.onEvent },
+        //   {
+        //     default: () => [
+        //       h("div", { class: "slot-div" }, "this is div slot"),
+        //       h("span", { class: "slot-span" }, "this is slot"),
+        //     ],
+        //   }
+        // ),
+        // h(
+        //   Foo,
+        //   { data: 666666, onEvent: this.onEvent },
+        //   {
+        //     top: ({ data }: any) =>
+        //       h("div", { class: "slot-div" }, "this is div slot top " + data),
+        //     bottom: () =>
+        //       h("span", { class: "slot-span" }, "this is slot bottom"),
+        //   }
+        // ),
       ]
     );
   },
@@ -67,10 +67,13 @@ export default {
 
     const onClick = () => {
       count.value++;
+      console.log(count.value, 'click')
     };
     return {
       msg: "App-vue",
       onEvent,
+      onClick,
+      count
     };
   },
 };

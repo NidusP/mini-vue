@@ -1,5 +1,5 @@
 import { isObject } from "@mini-vue/shared";
-import { shallowReadonly } from "@mini-vue/reactivity";
+import { shallowReadonly, proxyRefs } from "@mini-vue/reactivity";
 import { initProps } from "./componentProps";
 import { PublicInstanceProxyHandlers } from "./componentPublicInstance";
 import { createVNode } from "./vnode";
@@ -20,7 +20,10 @@ export function createComponentInstance(vnode, parent) {
     emit,
     // 取父级的provides
     provides: parent ? parent.provides : {},
-    parent
+    parent,
+    isMounted: false,
+    // 记录vnode 用于更新时比对vnode信息
+    subTree: {},
   };
 
   // 在 prod 坏境下的 ctx 只是下面简单的结构；dev 环境下会更复杂
@@ -63,6 +66,7 @@ function setupStatefulComponent(instance: any) {
       emit: emit.bind(null, instance),
     });
     setCurrentInstance(null);
+
     // setupResult 可能是 function 也可能是 object
     // - function 则将其作为组件的 render 函数
     // - object 则注入到组件的上下文中
@@ -77,7 +81,7 @@ function setupStatefulComponent(instance: any) {
 function handleSetupResult(instance, setupResult: any) {
   // TODO 处理 setupResult 是 function 的情况
   if (isObject(setupResult)) {
-    instance.setupState = setupResult;
+    instance.setupState = proxyRefs(setupResult);
   }
   finishComponentSetup(instance);
 }

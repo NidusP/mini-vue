@@ -5,15 +5,15 @@ function createElement(type) {
   return document.createElement(type);
 }
 
-function patchProp(el, key, value) {
+function patchProp(el, key, prevValue, nextValue) {
   if (isOn(key)) {
     el.addEventListener(
       key.slice(2).toLocaleLowerCase(),
       // (value as any).bind(vnode)
-      value
+      nextValue
     );
   } else {
-    el.setAttribute(key, value);
+    el.setAttribute(key, nextValue);
   }
 }
 
@@ -21,10 +21,26 @@ function insert(el, container) {
   container.append(el);
 }
 
+function setElementText(el, text) {
+  el.textContent = text;
+}
+/**
++  * @description 移除子元素
++  * @param child 子元素
++  */
+function remove(child) {
+  const parent = child.parentNode;
+  if (parent) {
+    parent.removeChild(child);
+  }
+}
+
 const { createApp } = createRenderer({
   createElement,
   patchProp,
   insert,
+  remove,
+  setElementText
 });
 
 export { createApp };

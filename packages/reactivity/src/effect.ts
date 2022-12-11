@@ -37,7 +37,6 @@ let activeEffect
 
 export function effect(fn, options:any = {}){
   const _effect = new ReactiveEffect(fn)
-  
   extend(_effect, options)
   _effect.run();
 

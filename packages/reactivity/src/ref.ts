@@ -84,7 +84,9 @@ export function ref(raw){
 //   return new Proxy(objectWithRefs, shallowUnwrapHandlers);
 // }
 
-
+/**
+ *  @description: 代理reactivity，直接返回值而不是 .value 
+ * */ 
 export const proxyRefs = (objectWithRefs) => {
   return new Proxy(objectWithRefs, {
     get(target, key){
