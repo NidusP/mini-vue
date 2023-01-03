@@ -6,6 +6,7 @@ import {
   ref
 } from "mini-vue";
 import Foo from "./Foo";
+import { ArrayToArrayCase1 } from "./Diff";
 
 (window as any).self = null;
 export default {
@@ -31,6 +32,7 @@ export default {
         h("div", { class: "cyan" }, "hi "),
         h("p", { class: "darkcyan" }, "plasticine "),
         h("p", { class: "darkviolet" }, `setupState msg: ${this.msg}`),
+        h(ArrayToArrayCase1),
         // h(
         //   Foo,
         //   { data: 666666, onEvent: this.onEvent },

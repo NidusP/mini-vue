@@ -4,6 +4,12 @@ import { isOn } from "@mini-vue/shared";
 function createElement(type) {
   return document.createElement(type);
 }
+function createText(text) {
+  return document.createTextNode(text);
+}
+function setText(node, text) {
+  node.nodeValue = text;
+}
 
 function patchProp(el, key, prevValue, nextValue) {
   if (isOn(key)) {
@@ -17,8 +23,10 @@ function patchProp(el, key, prevValue, nextValue) {
   }
 }
 
-function insert(el, container) {
-  container.append(el);
+function insert(child, container, anchor?) {
+  // container.append(el);
+  console.log(anchor, 'anchor anchor')
+  container.insertBefore(child, anchor || null);
 }
 
 function setElementText(el, text) {
@@ -37,10 +45,12 @@ function remove(child) {
 
 const { createApp } = createRenderer({
   createElement,
+  setText,
+  createText,
   patchProp,
   insert,
   remove,
-  setElementText
+  setElementText,
 });
 
 export { createApp };
