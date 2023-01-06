@@ -24,6 +24,8 @@ export function createComponentInstance(vnode, parent) {
     isMounted: false,
     // 记录vnode 用于更新时比对vnode信息
     subTree: {},
+    update: null,
+    next: null
   };
 
   // 在 prod 坏境下的 ctx 只是下面简单的结构；dev 环境下会更复杂

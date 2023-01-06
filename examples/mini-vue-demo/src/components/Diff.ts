@@ -14,21 +14,29 @@ const nextChildrenCase2 = [
   h("p", { key: "D" }, "D"),
   h("p", { key: "E" }, "E"),
 ];
-export const ArrayToArrayCase1 = {
-  name: "ArrayToArrayCase1",
-  setup() {
+export default {
+  name: "Diff",
+  setup(props) {
     const toggleChildrenCase1 = ref(true);
     window.toggleChildrenCase1 = toggleChildrenCase1;
-
+    console.log(props, 'this.count')
     return {
       toggleChildrenCase1,
+
     };
   },
   render() {
     // return h("div", {}, [h(Case1, { data: this.toggleChildrenCase1 })]);
-    return this.toggleChildrenCase1
-      ? h("div", {}, nextChildrenCase2)
-      : h("div", {}, prevChildrenCase2);
+    const bool = !!(this.$props.code % 2)
+    console.log(this.$props.code, bool, 'this.count')
+    return h(
+      'p',
+      {},
+      `here is child, I receive a message from App: ${this.$props.code}`
+    );
+    // return bool
+    //   ? h("div", {}, prevChildrenCase3)
+    //   : h("div", {}, nextChildrenCase3);
   },
 };
 
@@ -60,3 +68,24 @@ const Case1 = {
       : h("div", {}, nextChildrenCase1);
   },
 };
+
+
+const prevChildrenCase3 = [
+  h('p', { key: 'A' }, 'A'),
+  h('p', { key: 'B' }, 'B'),
+  h('p', { key: 'C' }, 'C'),
+  h('p', { key: 'D' }, 'D'),
+  h('p', { key: 'E' }, 'E'),
+  h('p', { key: 'F' }, 'F'),
+  h('p', { key: 'G' }, 'G'),
+];
+
+const nextChildrenCase3 = [
+  h('p', { key: 'A' }, 'A'),
+  h('p', { key: 'B' }, 'B'),
+  h('p', { key: 'E' }, 'new E'),
+  h('p', { key: 'D' }, 'D'),
+  h('p', { key: 'C' }, 'new C'),
+  h('p', { key: 'F' }, 'F'),
+  h('p', { key: 'G' }, 'G'),
+];

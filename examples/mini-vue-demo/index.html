@@ -1,30 +1,60 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite + TS</title>
-    <script src="https://pixijs.download/release/pixi.js"></script>
-  </head>
-  <body>
-    <div>
-      <a href="https://vitejs.dev" target="_blank">
-        <img src="/vite.svg" class="logo" alt="Vite logo" />
-      </a>
-      <a href="https://www.typescriptlang.org/" target="_blank">
-        <img src="./src/typescript.svg" class="logo vanilla" alt="TypeScript logo" />
-      </a>
-      <h1>Vite + TypeScript</h1>
-      <div class="card">
-        <button id="counter" type="button"></button>
-      </div>
-      <p class="read-the-docs">
-        Click on the Vite and TypeScript logos to learn more
-      </p>
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vite + TS</title>
+  <script src="https://pixijs.download/release/pixi.js"></script>
+</head>
+
+<body>
+  <div>
+    <a href="https://vitejs.dev" target="_blank">
+      <img src="/vite.svg" class="logo" alt="Vite logo" />
+    </a>
+    <a href="https://www.typescriptlang.org/" target="_blank">
+      <img src="./src/typescript.svg" class="logo vanilla" alt="TypeScript logo" />
+    </a>
+    <h1>Vite + TypeScript</h1>
+    <div class="card">
+      <button id="counter" type="button"></button>
     </div>
-    <div id="app"></div>
-    <div id="canvas"></div>
-    <script type="module" src="/src/main.ts"></script>
-  </body>
+    <p class="read-the-docs">
+      Click on the Vite and TypeScript logos to learn more
+    </p>
+  </div>
+  <div id="app"></div>
+  <div id="canvas"></div>
+  <!-- <iframe id="iframe" style="padding: 10px" width="500" height="300"
+    src="http://192.168.1.176:11287/projectxm/#/system/db-data-import">
+  </iframe> -->
+  <script type="module" src="/src/main.ts"></script>
+  <!-- <script>
+    (function () {
+      const iframe = document.querySelector('#iframe')
+      console.log('iframe', iframe, iframe.contentDocument, iframe.contentWindow)
+      iframe.onload = function () {
+        console.log('iframe', iframe, iframe.contentDocument, iframe.contentWindow)
+        iframe.addEventListener('click', function () {
+          console.log('asddsad')
+        })
+        // iframe.contentDocument.body.style.backgroundColor = "blue";
+        // iframe.contentDocument.body.style.visibility = 'hidden'
+        // iframe.contentDocument.addEventListener('click', function () {
+        //   console.log('asddsad')
+        // })
+        setTimeout(() => {
+          // iframe.scroll({
+          //   top: 100,
+          //   left: 100,
+          //   behavior: 'smooth'
+          // });
+        })
+      }
+    })()
+  </script> -->
+</body>
+
 </html>

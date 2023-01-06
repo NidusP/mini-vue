@@ -7,6 +7,7 @@ const publicPropertiesMap = {
   $el:  (i) => i.vnode.el,
   $data: (i) => null,
   $slots: (i) => i.slots,
+  $props: (i) => i.props
 } as const;
 
 /**
