@@ -3,6 +3,8 @@ import { effect } from "@mini-vue/reactivity";
 import { createComponentInstance, setupComponent } from "./component";
 import { createAppAPI } from "./createApp";
 import { Fragment, Text } from "./vnode";
+import { shouldUpdateComponent } from "./componentUpdateUtils";
+import { queueJob } from "./scheduler";
 
 /**
  *  自定义渲染函数
@@ -177,11 +179,6 @@ export function createRenderer(options) {
         hostPatchProp(el, key, prev, next);
       }
     }
-    console.log(
-      newProps,
-      oldProps,
-      "patchProps patchProps patchProps patchProps patchProps patchProps patchProps patchProps patchProps patchProps patchProps patchProps "
-    );
     // 遍历 oldProps 找出不存在于 newProps 中的 key 进行删除
     for (const key in oldProps) {
       if (!(key in newProps)) {
@@ -196,13 +193,13 @@ export function createRenderer(options) {
     const { shapeFlag } = n2;
     const c1 = n1.children,
       c2 = n2.children;
-    console.log(
-      n1,
-      n2,
-      shapeFlag & ShapeFlags.TEXT_CHILDREN,
-      shapeFlag & ShapeFlags.ARRAY_CHILDREN,
-      "patchChildren patchChildren"
-    );
+    // console.log(
+    //   n1,
+    //   n2,
+    //   shapeFlag & ShapeFlags.TEXT_CHILDREN,
+    //   shapeFlag & ShapeFlags.ARRAY_CHILDREN,
+    //   "patchChildren patchChildren"
+    // );
 
     if (shapeFlag & ShapeFlags.TEXT_CHILDREN) {
       // 新 children 是 text 类型
@@ -513,28 +510,25 @@ export function createRenderer(options) {
     // 更新组件实例引用
     const instance = (n2.component = n1.component);
     console.log("更新组件", n1, n2, instance);
-    // 将新的vnode赋值
-    instance.next = n2;
-    instance.update();
     // 先看看这个组件是否应该更新
-    // if (shouldUpdateComponent(n1, n2)) {
-    //   console.log(`组件需要更新: ${instance}`);
-    //   // 那么 next 就是新的 vnode 了（也就是 n2）
-    //   instance.next = n2;
-    //   // 这里的 update 是在 setupRenderEffect 里面初始化的，update 函数除了当内部的响应式对象发生改变的时候会调用
-    //   // 还可以直接主动的调用(这是属于 effect 的特性)
-    //   // 调用 update 再次更新调用 patch 逻辑
-    //   // 在update 中调用的 next 就变成了 n2了
-    //   // ps：可以详细的看看 update 中 next 的应用
-    //   // TODO 需要在 update 中处理支持 next 的逻辑
-    //   instance.update();
-    // } else {
-    //   console.log(`组件不需要更新: ${instance}`);
-    //   // 不需要更新的话，那么只需要覆盖下面的属性即可
-    //   n2.component = n1.component;
-    //   n2.el = n1.el;
-    //   instance.vnode = n2;
-    // }
+    if (shouldUpdateComponent(n1, n2)) {
+      console.log(`组件需要更新: ${instance}`);
+      // 那么 next 就是新的 vnode 了（也就是 n2）
+      instance.next = n2;
+      // 这里的 update 是在 setupRenderEffect 里面初始化的，update 函数除了当内部的响应式对象发生改变的时候会调用
+      // 还可以直接主动的调用(这是属于 effect 的特性)
+      // 调用 update 再次更新调用 patch 逻辑
+      // 在update 中调用的 next 就变成了 n2了
+      // ps：可以详细的看看 update 中 next 的应用
+      // TODO 需要在 update 中处理支持 next 的逻辑
+      instance.update();
+    } else {
+      console.log(`组件不需要更新: ${instance}`);
+      // 不需要更新的话，那么只需要覆盖下面的属性即可
+      n2.component = n1.component;
+      n2.el = n1.el;
+      instance.vnode = n2;
+    }
   }
 
   /**
@@ -543,10 +537,6 @@ export function createRenderer(options) {
    * */
   function setupRenderEffect(instance, initialVNode, container) {
     function componentUpdateFn() {
-      console.log(
-        "effect000000000000000000000000000000000000000000000000000",
-        instance.isMounted
-      );
       if (!instance.isMounted) {
         console.log("init");
         const subTree = (instance.subTree = instance.render.call(
@@ -578,7 +568,12 @@ export function createRenderer(options) {
       }
     }
     // 副作用函数， reactivity值更新时，执行render函数触发patch
-    instance.update = effect(componentUpdateFn);
+    instance.update = effect(componentUpdateFn, {
+      scheduler(){
+        // 异步更新
+        queueJob(instance.update);
+      }
+    });
   }
 
   function updateComponentPreRender(instance, nextVNode) {

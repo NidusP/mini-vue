@@ -21,7 +21,6 @@ export const PublicInstanceProxyHandlers = {
     if(publicGetter) return publicGetter(instance)
 
     const { setupState, props } = instance
-    console.log(setupState, props, key,'setupState, props, setupState, props, setupState, props, setupState, props, setupState, props')
     if (hasOwn(setupState, key)) {
       return setupState[key];
     } else if(hasOwn(props, key)){

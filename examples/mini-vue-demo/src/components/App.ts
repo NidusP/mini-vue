@@ -1,10 +1,4 @@
-import {
-  h,
-  createTextVNode,
-  getCurrentInstance,
-  provide,
-  ref
-} from "mini-vue";
+import { h, createTextVNode, getCurrentInstance, provide, ref, nextTick } from "mini-vue";
 import Foo from "./Foo";
 import Diff from "./Diff";
 
@@ -13,21 +7,17 @@ export default {
   name: "App",
   // 由于还没有实现模板编译的功能 因此先用 render 函数来替代
   render() {
+    console.log(
+      "render*****************************************************************************************************************************************************************************************************************************************render"
+    );
     (window as any).self = this;
     return h(
       "div",
       {
-        class: [this.count % 2 ? "cyan" :"", "success"],
-        onClick() {
-          console.log("click...", this.msg);
-          this.msg += "1";
-        },
-        onDblclick() {
-          console.log("onDblclick...", this, this.msg);
-        },
+        class: [this.count % 2 ? "cyan" : "", "success"],
       },
       [
-        h("button", { onClick: this.onClick }, 'click_' + this.count ),
+        h("button", { onClick: this.onClick }, "click_" + this.count),
         createTextVNode("Text Node Content"),
         h("div", { class: "cyan" }, "hi "),
         h("p", { class: "darkcyan" }, "plasticine "),
@@ -68,14 +58,21 @@ export default {
     const count = ref(0);
 
     const onClick = () => {
-      count.value++;
-      console.log(count.value, 'click')
+      for (let i = 0; i < 10; i++) {
+        count.value++;
+      }
+      console.log(count.value, "click", ins.vnode.el);
+      debugger;
+      nextTick(() => {
+        console.log(count.value, ins.vnode.el);
+        debugger;
+      });
     };
     return {
       msg: "App-vue",
       onEvent,
       onClick,
-      count
+      count,
     };
   },
 };
